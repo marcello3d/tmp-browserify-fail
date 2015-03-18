@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "browserify": "9.0.3"
+  }
+}
