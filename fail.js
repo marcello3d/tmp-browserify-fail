@@ -1,26 +1,36 @@
 var browserify = require('browserify');
+var path = require('path');
 
-var pubdir = __dirname;
+var pubdir = path.join(__dirname, 'js');
 
 var opt = {
-    debug: true,
-    basedir: pubdir,
-    exposeAll: true
+    debug: false,
+    basedir: pubdir
 };
 
 var bundle1 = browserify(opt);
-var name = pubdir + '/js/foo.js';
+var name = './foo.js';
 bundle1.require(name, { entry: true, expose: name, basedir: pubdir });
 
 var bundle2 = browserify({
-    debug: true,
+    debug: false,
     basedir: pubdir,
-    entries: [ pubdir + '/js/baz.js' ]
+    entries: [ path.join(pubdir,'baz.js') ]
 });
 
-// adding and removing this line causes failure //
-//bundle2.external(bundle1);
+bundle2.external('./foo.js');
 
-bundle2.bundle(function(err, src) {
-    console.log(err, src);
-});
+bundle1.bundle(function(err,src) {
+    if (err) {
+        return console.error("bundle1 err", err)
+    }
+    console.log('bundle1 src='+src);
+})
+
+
+bundle2.bundle(function(err,src) {
+    if (err) {
+        return console.error("bundle2 err", err)
+    }
+    console.log('bundle2 src='+src);
+})
